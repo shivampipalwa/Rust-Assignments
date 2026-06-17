@@ -18,10 +18,30 @@ pub struct Record {
 
 impl Record {
     pub fn to_bytes(&self) -> Vec<u8> {
-        todo!()
+        let mut data = Vec::with_capacity(6);
+
+        data.extend_from_slice(&self.id.to_le_bytes());
+        data.extend_from_slice(&self.value.to_le_bytes());
+
+        data
     }
 
     pub fn from_bytes(data: &[u8]) -> Result<Self, String> {
-        todo!()
+        if data.len() != 6 {
+            return Err(format!("Expected exactly 6 bytes, but got {}", data.len()));
+        }
+
+        let id_bytes: [u8; 4] = data[0..4]
+            .try_into()
+            .map_err(|_| "Failed to extract id bytes")?;
+
+        let value_bytes: [u8; 2] = data[4..6]
+            .try_into()
+            .map_err(|_| "Failed to extract value bytes")?;
+
+        Ok(Record {
+            id: u32::from_le_bytes(id_bytes),
+            value: u16::from_le_bytes(value_bytes),
+        })
     }
 }

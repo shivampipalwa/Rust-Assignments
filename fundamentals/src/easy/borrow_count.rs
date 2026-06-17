@@ -9,5 +9,7 @@
 */
 
 pub fn count_above(values: &Vec<i32>, threshold: i32) -> usize {
-    todo!()
+    values
+        .iter()
+        .fold(0, |acc, x| if (*x > threshold) { acc + 1 } else { acc })
 }

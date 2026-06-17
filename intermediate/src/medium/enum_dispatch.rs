@@ -9,15 +9,25 @@
     cargo test --test enum_dispatch_test
 */
 
-pub struct Circle { pub radius: f64 }
-pub struct Square { pub side: f64 }
+use std::f64::consts::PI;
+
+pub struct Circle {
+    pub radius: f64,
+}
+pub struct Square {
+    pub side: f64,
+}
 
 impl Circle {
-    pub fn area(&self) -> f64 { todo!() }
+    pub fn area(&self) -> f64 {
+        PI * self.radius * self.radius
+    }
 }
 
 impl Square {
-    pub fn area(&self) -> f64 { todo!() }
+    pub fn area(&self) -> f64 {
+        self.side * self.side
+    }
 }
 
 pub enum Shape {
@@ -27,6 +37,9 @@ pub enum Shape {
 
 impl Shape {
     pub fn area(&self) -> f64 {
-        todo!()
+        match self {
+            Shape::Circle(c) => c.area(),
+            Shape::Square(s) => s.area(),
+        }
     }
 }

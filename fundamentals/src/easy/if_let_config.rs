@@ -10,5 +10,8 @@
 */
 
 pub fn get_config(value: Option<String>) -> String {
-    todo!()
+    if let Some(inner_value) = value {
+        return inner_value;
+    }
+    "default".to_string()
 }

@@ -17,7 +17,11 @@ pub struct RangeStep {
 
 impl RangeStep {
     pub fn new(start: i32, end: i32, step: i32) -> Self {
-        todo!()
+        RangeStep {
+            current: start,
+            end,
+            step,
+        }
     }
 }
 
@@ -25,6 +29,23 @@ impl Iterator for RangeStep {
     type Item = i32;
 
     fn next(&mut self) -> Option<Self::Item> {
-        todo!()
+        match self.step {
+            ..0 => {
+                if self.end > self.current {
+                    return None;
+                }
+            }
+            0 => {
+                return None;
+            }
+            1.. => {
+                if self.current > self.end {
+                    return None;
+                }
+            }
+        }
+        let ans = Some(self.current);
+        self.current += self.step;
+        return ans;
     }
 }

@@ -9,5 +9,10 @@
 */
 
 pub fn classify_char(c: char) -> &'static str {
-    todo!()
+    match c {
+        _ if c.is_alphabetic() => "alphabetic",
+        _ if c.is_numeric() => "numeric",
+        _ if c.is_whitespace() => "whitespace",
+        _ => "other",
+    }
 }

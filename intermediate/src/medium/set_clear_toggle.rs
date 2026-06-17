@@ -10,13 +10,13 @@
 */
 
 pub fn set_bit(value: u32, bit: u8) -> u32 {
-    todo!()
+    value | (1 << bit)
 }
 
 pub fn clear_bit(value: u32, bit: u8) -> u32 {
-    todo!()
+    value & !(1 << bit)
 }
 
 pub fn toggle_bit(value: u32, bit: u8) -> u32 {
-    todo!()
+    value ^ (1 << bit)
 }

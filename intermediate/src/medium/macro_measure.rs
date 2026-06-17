@@ -11,7 +11,10 @@
 
 #[macro_export]
 macro_rules! measure_time {
-    ($e:expr) => {
-        todo!()
-    };
+    ($e:expr) => {{
+        let now = std::time::Instant::now();
+        let result = $e;
+        println!("{:?}", now.elapsed().as_secs());
+        result
+    }};
 }

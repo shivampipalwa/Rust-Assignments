@@ -9,5 +9,5 @@
 */
 
 pub fn parse_int(s: &str) -> Result<i32, String> {
-    todo!()
+    s.parse::<i32>().map_err(op)
 }

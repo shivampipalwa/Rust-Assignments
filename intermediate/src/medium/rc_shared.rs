@@ -13,5 +13,8 @@
 use std::rc::Rc;
 
 pub fn shared_ownership(value: String) -> (usize, String) {
-    todo!()
+    let rc_val = Rc::new(value);
+    let _ = Rc::clone(&rc_val);
+    let clone2 = Rc::clone(&rc_val);
+    return (Rc::strong_count(&clone2), (*rc_val).clone());
 }

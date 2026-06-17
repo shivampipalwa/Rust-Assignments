@@ -9,5 +9,11 @@
 */
 
 pub fn unsafe_swap(a: &mut i32, b: &mut i32) {
-    todo!()
+    let a_ptr: *mut i32 = a;
+    let b_ptr: *mut i32 = b;
+    unsafe {
+        let temp = *a_ptr;
+        *a_ptr = *b_ptr;
+        *b_ptr = temp;
+    }
 }

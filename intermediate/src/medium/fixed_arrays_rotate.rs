@@ -9,6 +9,19 @@
     cargo test --test fixed_arrays_rotate_test
 */
 
+fn reverse_slice(arr: &mut [u8]) {
+    let n = arr.len();
+    for i in 0..n / 2 {
+        let x = arr[i];
+        arr[i] = arr[n - i - 1];
+        arr[n - i - 1] = x;
+    }
+}
+
 pub fn rotate_left(arr: [u8; 8], count: usize) -> [u8; 8] {
-    todo!()
+    let mut brr = arr.clone();
+    reverse_slice(&mut brr[0..count % 8]);
+    reverse_slice(&mut brr[count % 8..]);
+    reverse_slice(&mut brr);
+    return brr;
 }

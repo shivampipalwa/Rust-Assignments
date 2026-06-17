@@ -22,12 +22,36 @@ pub enum DataError {
 
 impl fmt::Display for DataError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        todo!()
+        match self {
+            DataError::InvalidLength { expected, actual } => write!(
+                f,
+                "Invalid length. expected: {}, actual: {}",
+                expected, actual
+            ),
+            DataError::ChecksumMismatch => write!(f, "Checksum mismatch."),
+            DataError::Utf8Error(e) => write!(f, "UTF8 error. {e}"),
+        }
     }
 }
 
 impl std::error::Error for DataError {}
 
 pub fn validate_packet(data: &[u8]) -> Result<(), DataError> {
-    todo!()
+    if data.len() != 10 {
+        return Err(DataError::InvalidLength {
+            expected: 10,
+            actual: data.len(),
+        });
+    }
+    let mut xor = 0;
+    for (i, byte) in data.iter().enumerate() {
+        if i == data.len() - 1 {
+            break;
+        }
+        xor ^= byte;
+    }
+    if *data.last().unwrap() != xor {
+        return Err(DataError::ChecksumMismatch);
+    }
+    Ok(())
 }
