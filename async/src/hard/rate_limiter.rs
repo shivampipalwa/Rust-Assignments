@@ -5,14 +5,14 @@
   per second. Use a Semaphore (tokio::sync::Semaphore) to limit concurrency.
   Implement a method fn acquire(&self) -> Future<Output = ()>.
   When acquiring, permanently consume the permit by calling .forget() on the
-  SemaphorePermit so that available_permits() decreases with each acquire call. 
+  SemaphorePermit so that available_permits() decreases with each acquire call.
 
   Run the tests for this problem with:
     cargo test --test rate_limiter_test
 */
 
-use tokio::sync::Semaphore;
 use std::sync::Arc;
+use tokio::sync::Semaphore;
 
 pub struct RateLimiter {
     pub semaphore: Arc<Semaphore>,
@@ -20,10 +20,13 @@ pub struct RateLimiter {
 
 impl RateLimiter {
     pub fn new(permits: usize) -> Self {
-        todo!()
+        RateLimiter {
+            semaphore: Arc::new(Semaphore::new(permits)),
+        }
     }
 
     pub async fn acquire(&self) {
-        todo!()
+        let permit = self.semaphore.acquire().await.unwrap();
+        permit.forget();
     }
 }

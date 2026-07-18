@@ -9,6 +9,13 @@
     cargo test --test fan_out_fan_in_test
 */
 
+use tokio::spawn;
+
 pub async fn fan_out_fan_in(v: Vec<i32>) -> i32 {
-    todo!()
+    let handles: Vec<_> = v.iter().map(|&x| spawn(async move { x * x })).collect();
+    let mut ans = 0;
+    for handle in handles {
+        ans += handle.await.unwrap()
+    }
+    ans
 }

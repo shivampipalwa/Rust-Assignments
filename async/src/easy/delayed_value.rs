@@ -11,5 +11,6 @@
 use tokio::time::{sleep, Duration};
 
 pub async fn delayed_value(val: i32) -> i32 {
-    todo!()
+    sleep(Duration::from_millis(10)).await;
+    val
 }

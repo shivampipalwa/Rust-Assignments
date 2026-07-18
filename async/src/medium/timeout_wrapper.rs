@@ -9,12 +9,14 @@
     cargo test --test timeout_wrapper_test
 */
 
-use tokio::time::{timeout, Duration};
 use std::future::Future;
+use tokio::time::{timeout, Duration};
 
 pub async fn timeout_wrapper<F, T>(f: F, duration: Duration) -> Result<T, String>
 where
     F: Future<Output = T>,
 {
-    todo!()
+    timeout(duration, f)
+        .await
+        .map_err(|_| "Timeout".to_string())
 }

@@ -9,5 +9,5 @@
 */
 
 pub async fn hello_async() -> String {
-    todo!()
+    "hello from tokio".to_string()
 }

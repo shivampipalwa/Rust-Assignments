@@ -10,13 +10,27 @@
     cargo test --test retry_logic_test
 */
 
-use tokio::time::{sleep, Duration};
 use std::future::Future;
+use tokio::time::{sleep, Duration};
 
-pub async fn retry_operation<F, Fut, T, E>(mut f: F, max_retries: usize) -> Result<T, E>
+pub async fn retry_operation<F, Fut, T, E>(mut f: F, mut max_retries: usize) -> Result<T, E>
 where
     F: FnMut() -> Fut,
     Fut: Future<Output = Result<T, E>>,
 {
-    todo!()
+    let mut retries = 0;
+    loop {
+        match f().await {
+            Ok(val) => {
+                return Ok(val);
+            }
+            Err(e) => {
+                if retries >= max_retries {
+                    return Err(e);
+                }
+                retries += 1;
+                sleep(Duration::from_millis(10)).await;
+            }
+        }
+    }
 }

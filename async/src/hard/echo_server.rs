@@ -9,9 +9,19 @@
     cargo test --test echo_server_test
 */
 
-use tokio::net::TcpListener;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
+use tokio::net::TcpListener;
 
 pub async fn run_echo_server(port: u16) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
-    todo!()
+    let addr = format!("127.0.0.1:{}", port);
+    let listner = TcpListener::bind(&addr).await?;
+
+    let (mut socket, _peer_addr) = listner.accept().await?;
+    let mut buf = [0u8; 10];
+
+    socket.read(&mut buf).await?;
+
+    socket.write(&buf).await?;
+
+    Ok(buf.trim_ascii_end().to_vec())
 }

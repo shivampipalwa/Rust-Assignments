@@ -11,10 +11,13 @@
 
 use std::future::Future;
 
+use tokio::join;
+
 pub async fn compute_concurrently<F1, F2>(f1: F1, f2: F2) -> i32
 where
     F1: Future<Output = i32>,
     F2: Future<Output = i32>,
 {
-    todo!()
+    let (res1, res2) = join!(f1, f2);
+    res1 + res2
 }

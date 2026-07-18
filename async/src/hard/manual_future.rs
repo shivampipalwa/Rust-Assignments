@@ -21,6 +21,10 @@ impl<T: Unpin> Future for ReadyFuture<T> {
     type Output = T;
 
     fn poll(mut self: Pin<&mut Self>, _cx: &mut Context<'_>) -> Poll<Self::Output> {
-        todo!()
+        let val = self
+            .value
+            .take()
+            .expect("ReadyFuture poller after completion.");
+        Poll::Ready(val)
     }
 }

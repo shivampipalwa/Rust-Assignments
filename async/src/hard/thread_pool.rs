@@ -17,22 +17,55 @@ pub struct ThreadPool {
     pub sender: mpsc::Sender<Job>,
 }
 
-type Job = Box<dyn FnOnce() + Send + 'static>;
+pub type Job = Box<dyn FnOnce() + Send + 'static>;
 
 impl ThreadPool {
     pub fn new(size: usize) -> Self {
-        todo!()
+        let mut workers = Vec::new();
+        let (tx, rx) = mpsc::channel();
+        let rx_arc = Arc::new(Mutex::new(rx));
+        for i in 0..size {
+            let rx_arc = Arc::clone(&rx_arc);
+            workers.push(Worker::new(i, rx_arc));
+        }
+        ThreadPool {
+            workers,
+            sender: tx,
+        }
     }
 
     pub fn execute<F>(&self, f: F)
     where
         F: FnOnce() + Send + 'static,
     {
-        todo!()
+        let job = Box::new(f);
+        self.sender.send(job).unwrap();
     }
 }
 
 pub struct Worker {
     pub id: usize,
-    pub thread: Option<thread::JoinHandle<()>>,
+    pub thread: thread::JoinHandle<()>,
+}
+
+impl Worker {
+    fn new(id: usize, rx: Arc<Mutex<mpsc::Receiver<Job>>>) -> Self {
+        let handle = thread::spawn(move || loop {
+            let message = rx.lock().unwrap().recv();
+            match message {
+                Ok(job) => {
+                    println!("Worker {id} got a job; executing");
+                    job();
+                }
+                Err(_) => {
+                    eprintln!("Worker {id} disconnected; shutting down.");
+                    break;
+                }
+            }
+        });
+        Worker {
+            id: id,
+            thread: handle,
+        }
+    }
 }

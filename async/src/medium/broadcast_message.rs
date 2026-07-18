@@ -13,5 +13,19 @@
 use tokio::sync::broadcast;
 
 pub async fn broadcast_demo() -> i32 {
-    todo!()
+    let (tx, mut rx) = broadcast::channel(10);
+
+    let handles: Vec<_> = (0..3)
+        .map(|_| {
+            let mut rx1 = tx.subscribe();
+            tokio::spawn(async move { rx1.recv().await.unwrap() })
+        })
+        .collect();
+
+    tx.send(1).unwrap();
+    let mut sum = 0;
+    for handle in handles {
+        sum += handle.await.unwrap();
+    }
+    sum
 }

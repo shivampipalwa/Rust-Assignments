@@ -8,6 +8,15 @@
     cargo test --test spawn_factorial_test
 */
 
+use tokio::spawn;
+
 pub async fn spawn_factorial() -> u64 {
-    todo!()
+    let fact_handle = spawn(async {
+        let mut fact = 1;
+        for i in 1..=5 {
+            fact *= i;
+        }
+        fact
+    });
+    fact_handle.await.unwrap()
 }

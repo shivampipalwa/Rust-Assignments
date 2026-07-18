@@ -12,5 +12,5 @@
 use std::thread;
 
 pub fn spawn_move_thread(s: String) -> thread::JoinHandle<usize> {
-    todo!()
+    thread::spawn(move || s.len())
 }

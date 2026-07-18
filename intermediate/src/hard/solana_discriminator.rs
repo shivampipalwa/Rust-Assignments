@@ -30,10 +30,23 @@ impl AccountData for TokenAccount {
     }
 
     fn serialize(&self) -> Vec<u8> {
-        todo!()
+        let mut data = Vec::with_capacity(48);
+        data.extend(Self::discriminator());
+        data.extend(self.owner);
+        data.extend(self.amount.to_le_bytes());
+        data
     }
 
     fn deserialize(data: &[u8]) -> Result<Self, String> {
-        todo!()
+        if data.len() != 48 {
+            return Err(format!("Expected 48 bytes, got {}", data.len()));
+        }
+        if data[0..8] != Self::discriminator() {
+            return Err("Invalid discriminator. Account type mismatch".to_string());
+        }
+        let owner: [u8; 32] = data[8..40].try_into().unwrap();
+        let amount_byte: [u8; 8] = data[40..48].try_into().unwrap();
+        let amount = u64::from_le_bytes(amount_byte);
+        Ok(TokenAccount { owner, amount })
     }
 }

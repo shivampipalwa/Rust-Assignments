@@ -9,8 +9,19 @@
     cargo test --test oneshot_channel_test
 */
 
-use tokio::sync::oneshot;
+use tokio::{spawn, sync::oneshot};
 
 pub async fn oneshot_demo() -> String {
-    todo!()
+    let (tx, rx) = oneshot::channel();
+    spawn(async move {
+        if let Err(_) = tx.send("done".to_string()) {
+            println!("the receiver dropped");
+        }
+    });
+    match rx.await {
+        Ok(s) => {
+            return s;
+        }
+        Err(_) => "the sender dropped".to_string(),
+    }
 }

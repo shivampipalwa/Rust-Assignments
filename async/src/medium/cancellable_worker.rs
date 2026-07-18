@@ -16,5 +16,14 @@ use std::thread;
 use std::time::Duration;
 
 pub fn cancellable_worker() {
-    todo!()
+    let flag = Arc::new(AtomicBool::new(false));
+    let flag_clone = Arc::clone(&flag);
+    thread::spawn(move || {
+        while flag_clone.load(Ordering::Acquire) == false {
+            thread::sleep(Duration::from_millis(10));
+        }
+        println!("Thread exiting.")
+    });
+    thread::sleep(Duration::from_millis(50));
+    flag.store(true, Ordering::Release);
 }

@@ -15,5 +15,9 @@ where
     F1: Future<Output = i32> + Unpin,
     F2: Future<Output = i32> + Unpin,
 {
-    todo!()
+    let first = tokio::select! {
+        x = f1 => x,
+        x = f2 => x
+    };
+    return first;
 }

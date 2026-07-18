@@ -15,5 +15,26 @@ use std::sync::mpsc;
 use std::thread;
 
 pub fn data_pipeline() -> i32 {
-    todo!()
+    let (tx1, rx1) = mpsc::channel::<i32>();
+    let (tx2, rx2) = mpsc::channel::<i32>();
+    thread::spawn(move || {
+        for i in 1..=5 {
+            tx1.send(i).unwrap();
+        }
+    });
+    thread::spawn(move || {
+        for x in rx1 {
+            tx2.send(x * x).unwrap();
+        }
+    });
+    let ans = thread::spawn(move || {
+        let mut ans = 0;
+        for x in rx2 {
+            ans += x;
+        }
+        ans
+    })
+    .join()
+    .unwrap();
+    ans
 }
